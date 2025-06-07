@@ -6,7 +6,14 @@ use App\Http\Controllers\Admin\CriteriaController;
 use App\Http\Controllers\User\HomeController;        
 use App\Http\Controllers\User\QuestionController;    
 use App\Http\Controllers\User\ResultController;      
-use App\Http\Controllers\User\UserController; // Import UserController
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Auth\LoginController;
+
+// Authentication Routes
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -27,8 +34,20 @@ Route::prefix('user')->name('user.')->group(function () {
     Route::get('/form', [UserController::class, 'form'])->name('form');
 });
 
-// Rute admin
-Route::prefix('admin')->middleware('admin')->group(function () {
-    Route::resource('laptops', LaptopController::class);
-    Route::resource('criteria', CriteriaController::class);
+// Admin Routes
+Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        
+        // Laptop Management
+        Route::resource('laptops', LaptopController::class);
+        
+        // Criteria Management
+        Route::get('/criteria/{criteria}/delete', [CriteriaController::class, 'confirmDelete'])->name('criteria.confirm-delete');
+        Route::resource('criteria', CriteriaController::class);
+        
+        // Response Management
+        Route::get('responses', [App\Http\Controllers\Admin\ResponseController::class, 'index'])->name('responses.index');
+        Route::get('responses/{response}', [App\Http\Controllers\Admin\ResponseController::class, 'show'])->name('responses.show');
+    });
 });

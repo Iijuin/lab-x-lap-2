@@ -76,10 +76,10 @@
                             
                             <!-- Laptop Info -->
                             <div class="p-6">
+                                <div class="mb-2">
+                                    <span class="block text-lg font-bold text-indigo-700">{{ $laptop->name }}</span>
+                                </div>
                                 <div class="flex items-start justify-between mb-3">
-                                    <h3 class="text-xl font-bold text-gray-800">
-                                        {{ $laptop->brand }} {{ $laptop->model }}
-                                    </h3>
                                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
                                         #{{ $index + 1 }}
                                     </span>
@@ -131,18 +131,6 @@
                                     </div>
                                 </div>
                                 @endif
-                                
-                                <!-- Action Buttons -->
-                                <div class="flex space-x-2">
-                                    <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200">
-                                        <i class="fas fa-info-circle mr-1"></i>
-                                        Detail
-                                    </button>
-                                    <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors duration-200">
-                                        <i class="fas fa-shopping-cart mr-1"></i>
-                                        Beli
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     @endforeach

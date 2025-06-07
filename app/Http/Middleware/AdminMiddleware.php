@@ -2,27 +2,26 @@
 
 namespace App\Http\Middleware;
 
-   use Closure;
-   use Illuminate\Http\Request;
-   use Illuminate\Support\Facades\Auth;
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-   class AdminMiddleware
-   {
-       /**
-        * Handle an incoming request.
-        *
-        * @param  \Illuminate\Http\Request  $request
-        * @param  \Closure  $next
-        * @return mixed
-        */
-       public function handle(Request $request, Closure $next)
-       {
-           // Ganti dengan logika pemeriksaan admin Anda
-           if (!Auth::check() || !Auth::user()->isAdmin()) {
-               return redirect('/'); // Redirect jika bukan admin
-           }
+class AdminMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) {
+            return redirect()->route('home')->with('error', 'Akses ditolak. Anda bukan admin.');
+        }
 
-           return $next($request);
-       }
-   }
+        return $next($request);
+    }
+}
    

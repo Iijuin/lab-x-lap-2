@@ -15,11 +15,18 @@ class UserResponse extends Model
         'storage',
         'gpu',
         'screen',
+        'user_id'
     ];
 
     protected $casts = [
         'activities' => 'array', // Automatically handle JSON conversion
     ];
+
+    // Relasi ke model User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     // Helper methods to get budget range
     public function getMinBudgetAttribute()
@@ -82,25 +89,26 @@ class UserResponse extends Model
             return 'low';
         }
     }
+
     // Tambahkan method ini di UserResponse model
-public function getActivitiesDisplayAttribute()
-{
-    $activities = $this->activities;
-    
-    // Handle null or empty
-    if (empty($activities)) {
-        return 'Tidak ada aktivitas';
+    public function getActivitiesDisplayAttribute()
+    {
+        $activities = $this->activities;
+        
+        // Handle null or empty
+        if (empty($activities)) {
+            return 'Tidak ada aktivitas';
+        }
+        
+        // Ensure it's array
+        if (is_string($activities)) {
+            $activities = json_decode($activities, true) ?? [$activities];
+        }
+        
+        if (!is_array($activities)) {
+            return $activities;
+        }
+        
+        return implode(', ', $activities);
     }
-    
-    // Ensure it's array
-    if (is_string($activities)) {
-        $activities = json_decode($activities, true) ?? [$activities];
-    }
-    
-    if (!is_array($activities)) {
-        return $activities;
-    }
-    
-    return implode(', ', $activities);
-}
 }

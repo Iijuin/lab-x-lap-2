@@ -61,16 +61,37 @@ class ResultController extends Controller
         foreach ($laptops as $laptop) {
             $score = $this->calculateCompatibilityScore($laptop, $userResponse);
             
-            if ($score > 0) {
-                $laptop->score = $score;
-                $recommendations[] = $laptop;
-            }
+            // Include laptop even if score is 0, but with lower priority
+            $laptop->score = $score;
+            $recommendations[] = $laptop;
         }
 
         // Sort by score (highest first)
         usort($recommendations, function ($a, $b) {
             return $b->score <=> $a->score;
         });
+
+        // If no recommendations with score > 0, get all laptops and sort by closest match
+        if (empty($recommendations)) {
+            $allLaptops = Laptop::all();
+            foreach ($allLaptops as $laptop) {
+                $score = $this->calculateCompatibilityScore($laptop, $userResponse);
+                $laptop->score = $score;
+                $recommendations[] = $laptop;
+            }
+            
+            // Sort by score and then by price difference
+            usort($recommendations, function ($a, $b) use ($userResponse) {
+                $budgetCenter = ($userResponse->min_budget + $userResponse->max_budget) / 2;
+                $aPriceDiff = abs($a->price - $budgetCenter);
+                $bPriceDiff = abs($b->price - $budgetCenter);
+                
+                if ($b->score === $a->score) {
+                    return $aPriceDiff <=> $bPriceDiff;
+                }
+                return $b->score <=> $a->score;
+            });
+        }
 
         // Return top 6 recommendations
         return array_slice($recommendations, 0, 6);
@@ -100,7 +121,9 @@ class ResultController extends Controller
         }
 
         // Activities compatibility (35% weight)
-        $activities = $userResponse->activities;
+        $activities = is_array($userResponse->activities)
+            ? $userResponse->activities
+            : json_decode($userResponse->activities, true);
         $activityScore = 0;
         
         foreach ($activities as $activity) {
