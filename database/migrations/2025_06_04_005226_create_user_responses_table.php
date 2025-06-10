@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('storage');
             $table->string('gpu');
             $table->string('screen');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });
     }

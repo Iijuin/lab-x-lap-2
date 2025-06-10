@@ -160,8 +160,13 @@
 
     <!-- Step 2: Questions -->
     <div id="step2" class="step">
-        <main class="flex-grow px-6 pt-6 max-w-7xl mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-start gap-10 sm:gap-0">
+
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20">
             <div class="text-[12px] font-normal text-[#7a7a7a]">1</div>
+            <div class="text-[12px] font-normal text-[#7a7a7a] text-right mb-2">Kebutuhan &amp; Preferensi</div>
+        </div>
+
+        <main class="flex-grow px-6 pt-6 max-w-7xl mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-start gap-10 sm:gap-0">
             
             <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20">
                 <!-- Activities Section -->
@@ -173,7 +178,7 @@
                     </h2>
                     
                     <form class="flex flex-col gap-1" id="activitiesForm">
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#4a4a4a] text-white px-2 py-[2px] w-max">
+                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
                             <input type="checkbox" name="activity" value="programming" class="w-3 h-3" />
                             Programming/Coding
                         </label>
@@ -181,7 +186,7 @@
                             <input type="checkbox" name="activity" value="desain" class="w-3 h-3" />
                             Desain Grafis/Multimedia
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#4a4a4a] text-white px-2 py-[2px] w-max">
+                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
                             <input type="checkbox" name="activity" value="machine-learning" class="w-3 h-3" />
                             Machine Learning/AI
                         </label>
@@ -189,7 +194,7 @@
                             <input type="checkbox" name="activity" value="game-dev" class="w-3 h-3" />
                             Pengembangan Game
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#4a4a4a] text-white px-2 py-[2px] w-max">
+                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
                             <input type="checkbox" name="activity" value="office" class="w-3 h-3" />
                             Office/Produktivitas
                         </label>
@@ -206,7 +211,6 @@
 
                 <!-- Budget Section -->
                 <section class="max-w-[320px]">
-                    <div class="text-[12px] font-normal text-[#7a7a7a] text-right mb-2">Kebutuhan &amp; Preferensi</div>
                     <h2 class="text-[20px] leading-[1.1] font-normal mb-4 text-[#4a4a4a]">
                         Berapa <em>budget</em> ideal untuk<br />
                         laptop mahasiswa TIK<br />
@@ -239,14 +243,14 @@
             </div>
         </main>
 
-        <footer class="flex justify-between px-6 pb-6">
-            <!-- Back Arrow -->
+       <footer class="flex justify-between items-center w-full max-w-full mx-auto mt-10 px-10">
+    <!-- Back Arrow -->
             <div class="arrow-next" onclick="prevStep(1)">
                 <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#7a7a7a]">
                     <path d="M25 12l-8 8 8 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 20 20)"/>
                 </svg>
             </div>
-            
+
             <!-- Next Arrow -->
             <div class="arrow-next" onclick="nextStep(2)" id="arrow2">
                 <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#7a7a7a]">
@@ -254,13 +258,14 @@
                 </svg>
             </div>
         </footer>
+
     </div>
 
     <!-- Step 3: RAM & Storage -->
     <div id="step3" class="step">
-        <div class="flex justify-between px-6 pt-6 text-[12px] leading-none">
-            <div>2</div>
-            <div>Spesifikasi minimum yang kamu rekomendasikan</div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20">
+            <div class="text-[12px] font-normal text-[#7a7a7a]">1</div>
+            <div class="text-[12px] font-normal text-[#7a7a7a] text-right mb-2">Kebutuhan &amp; Preferensi</div>
         </div>
         
         <div class="flex flex-1 justify-center items-center px-6">
@@ -371,6 +376,10 @@
             </div>
         </footer>
     </div>
+
+    
+        
+
 </div>
 @endsection
 
@@ -436,6 +445,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateGPUScreenForm() {
         return selectedGPU !== '' && selectedScreen !== '';
     }
+    
+
 
     // Update arrow state
     function updateArrowState() {
@@ -469,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 arrow.classList.add('arrow-disabled');
             }
-        }
+        } } 
     }
 
     // Make updateArrowState globally accessible
@@ -489,7 +500,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial validation
     updateArrowState();
-});
+);
 
 function nextStep(currentStep) {
     if (currentStep === 1) {
@@ -527,7 +538,16 @@ function nextStep(currentStep) {
         
         document.getElementById('step3').classList.remove('active');
         document.getElementById('step4').classList.add('active');
+    }   else if (currentStep === 4) {
+        if (selectedGPU === '' || selectedScreen === '') {
+            alert('Mohon pilih spesifikasi GPU dan Layar');
+            return;
+        }
+
+        document.getElementById('step4').classList.remove('active');
+        document.getElementById('step5').classList.add('active');
     }
+
     
     updateArrowState();
 }
@@ -542,6 +562,9 @@ function prevStep(targetStep) {
     } else if (targetStep === 3) {
         document.getElementById('step4').classList.remove('active');
         document.getElementById('step3').classList.add('active');
+    }  else if (targetStep === 4) {
+        document.getElementById('step5').classList.remove('active');
+        document.getElementById('step4').classList.add('active');
     }
     
     updateArrowState();
