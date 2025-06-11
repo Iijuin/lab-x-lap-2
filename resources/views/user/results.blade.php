@@ -16,28 +16,30 @@
 
         <!-- User Info Card -->
         <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <div class="flex items-center justify-between flex-wrap gap-4">
-                <div class="flex items-center space-x-4">
-                    <div class="bg-blue-100 p-3 rounded-full">
-                        <i class="fas fa-user text-blue-600 text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-800">{{ $userResponse->name ?? 'Pengguna' }}</h3>
-                        <p class="text-gray-600">Email: {{ $userResponse->email ?? 'Tidak tersedia' }}</p>
-                        <p class="text-sm text-gray-500">
-                            <i class="fas fa-calendar mr-1"></i>
-                            {{ $userResponse->created_at ? $userResponse->created_at->format('d M Y, H:i') : 'Tidak tersedia' }}
-                        </p>
-                    </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">
+                        <i class="fas fa-user text-blue-500 mr-2"></i>
+                        {{ $userResponse->name }}
+                    </h2>
+                    <p class="text-gray-600">
+                        <i class="fas fa-graduation-cap text-green-500 mr-2"></i>
+                        {{ $userResponse->program }}
+                    </p>
                 </div>
                 <div class="text-right">
-                    <p class="text-sm text-gray-500">Budget Range</p>
-                    <p class="text-lg font-semibold text-green-600">
-                        {{ ucfirst(str_replace('-', ' ', $userResponse->budget)) }}
-                    </p>
-                    <p class="text-sm text-gray-500">
-                        Rp {{ number_format($userResponse->min_budget ?? 0, 0, ',', '.') }} - 
-                        Rp {{ number_format($userResponse->max_budget ?? 0, 0, ',', '.') }}
+                    <p class="text-sm text-gray-500 mb-1">Budget Range</p>
+                    <p class="text-lg font-semibold text-gray-800">
+                        @php
+                            $budgetRanges = [
+                                'less-5m' => 'Di bawah 5 Juta',
+                                '5m-8m' => '5 Juta - 8 Juta',
+                                '8m-12m' => '8 Juta - 12 Juta',
+                                '12m-15m' => '12 Juta - 15 Juta',
+                                'more-15m' => 'Di atas 15 Juta'
+                            ];
+                        @endphp
+                        {{ $budgetRanges[$userResponse->budget] ?? $userResponse->budget }}
                     </p>
                 </div>
             </div>
@@ -63,8 +65,9 @@
                             
                             <!-- Laptop Image -->
                             <div class="bg-gray-50 p-6 flex items-center justify-center h-48">
-                                @if(isset($laptop->image) && $laptop->image)
-                                    <img src="{{ $laptop->image }}" alt="{{ $laptop->brand }} {{ $laptop->model }}" 
+                                @if($laptop->image)
+                                    <img src="{{ Storage::url($laptop->image) }}" 
+                                         alt="{{ $laptop->name }}" 
                                          class="max-h-full max-w-full object-contain">
                                 @else
                                     <div class="text-gray-400 text-center">
@@ -108,7 +111,7 @@
                                     </div>
                                     <div class="flex items-center text-sm text-gray-600">
                                         <i class="fas fa-desktop w-4 mr-2 text-red-500"></i>
-                                        <span>{{ $laptop->graphics ?? 'N/A' }}</span>
+                                        <span>{{ $laptop->gpu ?? 'N/A' }}</span>
                                     </div>
                                     @if(isset($laptop->screen_size))
                                     <div class="flex items-center text-sm text-gray-600">
@@ -119,15 +122,15 @@
                                 </div>
                                 
                                 <!-- Score/Rating -->
-                                @if(isset($laptop->score))
+                                @if(isset($laptop->swara_score))
                                 <div class="mb-4">
                                     <div class="flex items-center justify-between mb-1">
                                         <span class="text-sm text-gray-600">Compatibility Score</span>
-                                        <span class="text-sm font-semibold">{{ number_format($laptop->score, 1) }}%</span>
+                                        <span class="text-sm font-semibold">{{ number_format($laptop->swara_score * 100, 1) }}%</span>
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-2">
                                         <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full" 
-                                             style="width: {{ $laptop->score }}%"></div>
+                                             style="width: {{ $laptop->swara_score * 100 }}%"></div>
                                     </div>
                                 </div>
                                 @endif
@@ -151,84 +154,44 @@
             </div>
         @endif
 
-        <!-- User Preferences Summary -->
+        <!-- Preferences Summary -->
         <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                <i class="fas fa-list-check text-indigo-600 mr-2"></i>
-                Ringkasan Preferensi Anda
-            </h3>
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                <i class="fas fa-clipboard-list text-indigo-600 mr-2"></i>
+                Ringkasan Preferensi
+            </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @if(isset($userResponse->program))
-                <div class="flex items-center space-x-3">
-                    <div class="bg-blue-100 p-2 rounded-full">
-                        <i class="fas fa-graduation-cap text-blue-600"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Program Studi</p>
-                        <p class="font-semibold text-gray-800">{{ $userResponse->program }}</p>
-                    </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Budget</h3>
+                    <p class="text-lg font-semibold text-gray-800">
+                        {{ $budgetRanges[$userResponse->budget] ?? $userResponse->budget }}
+                    </p>
                 </div>
-                @endif
-                
-                @if(isset($userResponse->activities))
-<div class="flex items-center space-x-3">
-    <div class="bg-green-100 p-2 rounded-full">
-        <i class="fas fa-tasks text-green-600"></i>
-    </div>
-    <div>
-        <p class="text-sm text-gray-500">Aktivitas</p>
-        <p class="font-semibold text-gray-800">{{ $userResponse->activities_display }}</p>
-    </div>
-</div>
-@endif
-                
-                @if(isset($userResponse->budget))
-                <div class="flex items-center space-x-3">
-                    <div class="bg-purple-100 p-2 rounded-full">
-                        <i class="fas fa-wallet text-purple-600"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Budget</p>
-                        <p class="font-semibold text-gray-800">{{ ucfirst(str_replace('-', ' ', $userResponse->budget)) }}</p>
-                    </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">RAM</h3>
+                    <p class="text-lg font-semibold text-gray-800">{{ $userResponse->ram }}</p>
                 </div>
-                @endif
-                
-                @if(isset($userResponse->ram))
-                <div class="flex items-center space-x-3">
-                    <div class="bg-yellow-100 p-2 rounded-full">
-                        <i class="fas fa-memory text-yellow-600"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">RAM Preferred</p>
-                        <p class="font-semibold text-gray-800">{{ strtoupper($userResponse->ram) }}</p>
-                    </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Storage</h3>
+                    <p class="text-lg font-semibold text-gray-800">{{ $userResponse->storage }}</p>
                 </div>
-                @endif
-                
-                @if(isset($userResponse->storage))
-                <div class="flex items-center space-x-3">
-                    <div class="bg-red-100 p-2 rounded-full">
-                        <i class="fas fa-hdd text-red-600"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Storage Preferred</p>
-                        <p class="font-semibold text-gray-800">{{ strtoupper(str_replace('-', ' ', $userResponse->storage)) }}</p>
-                    </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">GPU</h3>
+                    <p class="text-lg font-semibold text-gray-800">{{ $userResponse->gpu }}</p>
                 </div>
-                @endif
-                
-                @if(isset($userResponse->gpu))
-                <div class="flex items-center space-x-3">
-                    <div class="bg-indigo-100 p-2 rounded-full">
-                        <i class="fas fa-tv text-indigo-600"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">GPU Preferred</p>
-                        <p class="font-semibold text-gray-800">{{ ucfirst(str_replace('-', ' ', $userResponse->gpu)) }}</p>
-                    </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Screen Size</h3>
+                    <p class="text-lg font-semibold text-gray-800">{{ $userResponse->screen }}</p>
                 </div>
-                @endif
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Aktivitas Utama</h3>
+                    <p class="text-lg font-semibold text-gray-800">
+                        @php
+                            $activities = json_decode($userResponse->activities);
+                            echo is_array($activities) ? implode(', ', $activities) : $activities;
+                        @endphp
+                    </p>
+                </div>
             </div>
         </div>
 

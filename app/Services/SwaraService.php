@@ -41,6 +41,12 @@ class SwaraService
         // Calculate SWARA scores
         $scoredLaptops = $this->calculateSwaraScores($filteredLaptops, $weights, $userResponse);
 
+        // Add formatted price and budget to each laptop
+        $scoredLaptops->each(function ($laptop) use ($userResponse) {
+            $laptop->formatted_price = $this->formatRupiah($laptop->price);
+            $laptop->formatted_budget = $this->formatBudgetRange($userResponse->budget);
+        });
+
         // Sort by score and return top recommendations
         return $scoredLaptops->sortByDesc('swara_score')->take($limit);
     }
@@ -75,11 +81,40 @@ class SwaraService
         return $laptops->map(function ($laptop) use ($weights, $userResponse) {
             $scores = $laptop->getCriteriaScores();
             
-            // Calculate weighted score
+            // Calculate weighted score with sub-criteria
             $totalScore = 0;
             foreach ($weights as $criterion => $weight) {
                 if (isset($scores[$criterion])) {
-                    $totalScore += $scores[$criterion] * $weight;
+                    // Processor sub-criteria
+                    if ($criterion === 'processor') {
+                        $processorScore = $this->calculateProcessorScore($laptop->processor, $userResponse->activities);
+                        $totalScore += $processorScore * $weight;
+                    }
+                    // RAM sub-criteria
+                    else if ($criterion === 'ram') {
+                        $ramScore = $this->calculateRamScore($laptop->ram, $userResponse->activities);
+                        $totalScore += $ramScore * $weight;
+                    }
+                    // Storage sub-criteria
+                    else if ($criterion === 'storage') {
+                        $storageScore = $this->calculateStorageScore($laptop->storage, $userResponse->storage);
+                        $totalScore += $storageScore * $weight;
+                    }
+                    // GPU sub-criteria
+                    else if ($criterion === 'gpu') {
+                        $gpuScore = $this->calculateGpuScore($laptop->gpu, $userResponse->activities);
+                        $totalScore += $gpuScore * $weight;
+                    }
+                    // Screen sub-criteria
+                    else if ($criterion === 'screen') {
+                        $screenScore = $this->calculateScreenScore($laptop->screen_size, $userResponse->screen);
+                        $totalScore += $screenScore * $weight;
+                    }
+                    // Price sub-criteria
+                    else if ($criterion === 'price') {
+                        $priceScore = $this->calculatePriceScore($laptop->price, $userResponse->budget);
+                        $totalScore += $priceScore * $weight;
+                    }
                 }
             }
 
@@ -231,5 +266,219 @@ class SwaraService
         }
 
         return min($bonus, 0.2); // Cap bonus at 0.2
+    }
+
+    // Processor scoring
+    private function calculateProcessorScore($processor, $activities)
+    {
+        $score = 0;
+        $activities = json_decode($activities, true);
+        
+        // Check processor generation
+        if (preg_match('/i[3579]|Ryzen [3579]/', $processor)) {
+            $score += 0.4;
+        }
+        
+        // Check for specific activities
+        foreach ($activities as $activity) {
+            switch ($activity) {
+                case 'machine-learning':
+                    if (strpos($processor, 'i7') !== false || strpos($processor, 'i9') !== false || 
+                        strpos($processor, 'Ryzen 7') !== false || strpos($processor, 'Ryzen 9') !== false) {
+                        $score += 0.3;
+                    }
+                    break;
+                case 'programming':
+                    if (strpos($processor, 'i5') !== false || strpos($processor, 'Ryzen 5') !== false) {
+                        $score += 0.2;
+                    }
+                    break;
+            }
+        }
+        
+        return min($score, 1.0);
+    }
+
+    // RAM scoring
+    private function calculateRamScore($ram, $activities)
+    {
+        $score = 0;
+        $ramValue = (int) filter_var($ram, FILTER_SANITIZE_NUMBER_INT);
+        $activities = json_decode($activities, true);
+        
+        // Base score based on RAM capacity
+        if ($ramValue >= 32) $score += 0.4;
+        else if ($ramValue >= 16) $score += 0.3;
+        else if ($ramValue >= 8) $score += 0.2;
+        else if ($ramValue >= 4) $score += 0.1;
+        
+        // Activity-based scoring
+        foreach ($activities as $activity) {
+            if (in_array($activity, ['machine-learning', 'game-dev']) && $ramValue >= 16) {
+                $score += 0.3;
+            }
+            if (in_array($activity, ['programming', 'desain']) && $ramValue >= 8) {
+                $score += 0.2;
+            }
+        }
+        
+        return min($score, 1.0);
+    }
+
+    // Storage scoring
+    private function calculateStorageScore($storage, $userStorage)
+    {
+        $score = 0;
+        
+        // Check storage type
+        if (strpos($storage, 'SSD') !== false) {
+            $score += 0.4;
+        } else if (strpos($storage, 'HDD') !== false) {
+            $score += 0.2;
+        }
+        
+        // Check storage capacity
+        $capacity = (int) filter_var($storage, FILTER_SANITIZE_NUMBER_INT);
+        if ($capacity >= 1000) $score += 0.3;
+        else if ($capacity >= 512) $score += 0.2;
+        else if ($capacity >= 256) $score += 0.1;
+        
+        // Match user preference
+        if ($userStorage === 'ssd-1tb' && strpos($storage, 'SSD') !== false && $capacity >= 1000) {
+            $score += 0.3;
+        }
+        
+        return min($score, 1.0);
+    }
+
+    // GPU scoring
+    private function calculateGpuScore($gpu, $activities)
+    {
+        $score = 0;
+        $activities = json_decode($activities, true);
+        
+        // Check GPU type
+        if (strpos($gpu, 'RTX') !== false) {
+            $score += 0.4;
+        } else if (strpos($gpu, 'GTX') !== false) {
+            $score += 0.3;
+        } else if (strpos($gpu, 'MX') !== false) {
+            $score += 0.2;
+        } else if (strpos($gpu, 'Radeon') !== false) {
+            $score += 0.25;
+        }
+        
+        // Activity-based scoring
+        foreach ($activities as $activity) {
+            if (in_array($activity, ['machine-learning', 'game-dev', 'desain'])) {
+                if (strpos($gpu, 'RTX') !== false) {
+                    $score += 0.3;
+                } else if (strpos($gpu, 'GTX') !== false) {
+                    $score += 0.2;
+                }
+            }
+        }
+        
+        return min($score, 1.0);
+    }
+
+    // Screen scoring
+    private function calculateScreenScore($screenSize, $userScreen)
+    {
+        $score = 0;
+        $size = (float) filter_var($screenSize, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        
+        // Size-based scoring
+        if ($size >= 17) $score += 0.3;
+        else if ($size >= 15) $score += 0.2;
+        else if ($size >= 13) $score += 0.1;
+        
+        // Match user preference
+        switch ($userScreen) {
+            case '13-14-inch':
+                if ($size >= 13 && $size <= 14) $score += 0.4;
+                break;
+            case '15-16-inch':
+                if ($size >= 15 && $size <= 16) $score += 0.4;
+                break;
+            case '17-inch':
+                if ($size >= 17) $score += 0.4;
+                break;
+        }
+        
+        return min($score, 1.0);
+    }
+
+    /**
+     * Format number to Rupiah currency
+     */
+    private function formatRupiah($number)
+    {
+        return 'Rp ' . number_format($number, 0, ',', '.');
+    }
+
+    // Price scoring
+    private function calculatePriceScore($price, $budget)
+    {
+        $score = 0;
+        
+        // Format price ranges for better readability
+        $ranges = [
+            'less-5m' => [
+                'min' => 0,
+                'max' => 5000000,
+                'next' => 6000000
+            ],
+            '5m-8m' => [
+                'min' => 5000000,
+                'max' => 8000000,
+                'next' => 9000000
+            ],
+            '8m-12m' => [
+                'min' => 8000000,
+                'max' => 12000000,
+                'next' => 13000000
+            ],
+            '12m-15m' => [
+                'min' => 12000000,
+                'max' => 15000000,
+                'next' => 16000000
+            ],
+            'more-15m' => [
+                'min' => 15000000,
+                'max' => PHP_FLOAT_MAX,
+                'next' => 14000000
+            ]
+        ];
+
+        if (isset($ranges[$budget])) {
+            $range = $ranges[$budget];
+            
+            if ($price >= $range['min'] && $price <= $range['max']) {
+                $score = 1.0;
+            } else if ($price < $range['next']) {
+                $score = 0.7;
+            } else {
+                $score = 0.3;
+            }
+        }
+        
+        return $score;
+    }
+
+    /**
+     * Format budget range to readable format
+     */
+    private function formatBudgetRange($budget)
+    {
+        $ranges = [
+            'less-5m' => 'Di bawah ' . $this->formatRupiah(5000000),
+            '5m-8m' => $this->formatRupiah(5000000) . ' - ' . $this->formatRupiah(8000000),
+            '8m-12m' => $this->formatRupiah(8000000) . ' - ' . $this->formatRupiah(12000000),
+            '12m-15m' => $this->formatRupiah(12000000) . ' - ' . $this->formatRupiah(15000000),
+            'more-15m' => 'Di atas ' . $this->formatRupiah(15000000)
+        ];
+
+        return $ranges[$budget] ?? $budget;
     }
 }

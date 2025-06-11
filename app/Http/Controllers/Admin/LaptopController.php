@@ -35,6 +35,12 @@ class LaptopController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if (isset($validated['image'])) {
+                Storage::disk('public')->delete($validated['image']);
+            }
+            
+            // Upload gambar baru
             $imagePath = $request->file('image')->store('laptops', 'public');
             $validated['image'] = $imagePath;
         }
@@ -69,6 +75,8 @@ class LaptopController extends Controller
             if ($laptop->image) {
                 Storage::disk('public')->delete($laptop->image);
             }
+            
+            // Upload gambar baru
             $imagePath = $request->file('image')->store('laptops', 'public');
             $validated['image'] = $imagePath;
         }

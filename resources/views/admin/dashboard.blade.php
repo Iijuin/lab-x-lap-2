@@ -106,7 +106,17 @@
                     </div>
                     <div class="text-right">
                         <p class="text-sm font-medium text-gray-800">
-                            Budget: {{ ucfirst(str_replace('-', ' ', $response->budget)) }}
+                            Budget: 
+                            @php
+                                $budgetRanges = [
+                                    'less-5m' => 'Di bawah Rp5.000.000',
+                                    '5m-8m' => 'Rp5.000.000 - Rp8.000.000',
+                                    '8m-12m' => 'Rp8.000.000 - Rp12.000.000',
+                                    '12m-15m' => 'Rp12.000.000 - Rp15.000.000',
+                                    'more-15m' => 'Di atas Rp15.000.000'
+                                ];
+                            @endphp
+                            {{ $budgetRanges[$response->budget] ?? $response->budget }}
                         </p>
                         <p class="text-sm text-gray-500">
                             {{ $response->program }}
