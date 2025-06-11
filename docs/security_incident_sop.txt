@@ -1,0 +1,98 @@
+# SOP Penanganan Insiden Keamanan
+
+## 1. Identifikasi Insiden
+### 1.1 Kategori Insiden
+- Serangan DDoS
+- Kebocoran Data
+- Unauthorized Access
+- Malware Infection
+- Social Engineering
+- Phishing Attempts
+
+### 1.2 Level Keparahan
+- Level 1: Minor (Tidak mempengaruhi operasional)
+- Level 2: Moderate (Mempengaruhi sebagian operasional)
+- Level 3: Major (Mempengaruhi seluruh operasional)
+- Level 4: Critical (Mengancam kelangsungan bisnis)
+
+## 2. Prosedur Respon
+### 2.1 Langkah Awal
+1. Dokumentasikan waktu kejadian
+2. Kumpulkan bukti awal
+3. Isolasi sistem yang terpengaruh
+4. Notifikasi tim keamanan
+
+### 2.2 Eskalasi
+1. Level 1: Tim Keamanan
+2. Level 2: Manajer Keamanan
+3. Level 3: CISO
+4. Level 4: CEO & Dewan Direksi
+
+### 2.3 Komunikasi
+1. Internal:
+   - Tim Teknis
+   - Manajemen
+   - Karyawan
+2. Eksternal:
+   - Pelanggan
+   - Regulator
+   - Media (jika diperlukan)
+
+## 3. Prosedur Penanganan
+### 3.1 Isolasi
+1. Putuskan akses ke sistem yang terpengaruh
+2. Backup data penting
+3. Dokumentasikan semua akses
+
+### 3.2 Investigasi
+1. Kumpulkan log
+2. Analisis root cause
+3. Dokumentasikan temuan
+
+### 3.3 Pemulihan
+1. Bersihkan sistem
+2. Restore dari backup
+3. Verifikasi keamanan
+4. Monitoring pasca insiden
+
+## 4. Dokumentasi
+### 4.1 Yang Harus Didokumentasikan
+- Waktu kejadian
+- Deskripsi insiden
+- Tindakan yang diambil
+- Tim yang terlibat
+- Hasil investigasi
+- Langkah pencegahan
+
+### 4.2 Format Dokumentasi
+- Form Insiden Keamanan
+- Log Aktivitas
+- Laporan Investigasi
+- Laporan Pemulihan
+
+## 5. Pencegahan
+### 5.1 Langkah Pencegahan
+1. Update sistem secara berkala
+2. Pelatihan karyawan
+3. Monitoring sistem
+4. Backup berkala
+5. Review kebijakan keamanan
+
+### 5.2 Review Pasca Insiden
+1. Analisis root cause
+2. Update prosedur
+3. Pelatihan tambahan
+4. Update dokumentasi
+
+## 6. Kontak Darurat
+### 6.1 Tim Keamanan
+- [Nama] - [Nomor] - [Email]
+- [Nama] - [Nomor] - [Email]
+
+### 6.2 Manajemen
+- [Nama] - [Nomor] - [Email]
+- [Nama] - [Nomor] - [Email]
+
+### 6.3 Vendor/Partner
+- [Nama Perusahaan] - [Kontak]
+- [Nama Perusahaan] - [Kontak] 

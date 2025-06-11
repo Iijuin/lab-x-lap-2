@@ -1,0 +1,55 @@
+# Dokumentasi Hasil Audit dan Tindak Lanjut
+
+## 1. Informasi Dasar
+- Tanggal Audit: [DD/MM/YYYY]
+- Jenis Audit: [Internal/External]
+- Auditor: [Nama Auditor]
+- Scope Audit: [Area yang diaudit]
+
+## 2. Temuan
+### 2.1 Temuan Kritis (Critical)
+- Deskripsi: [Detail temuan]
+- Risiko: [Tingkat risiko]
+- Rekomendasi: [Solusi yang disarankan]
+- Status: [Open/In Progress/Closed]
+- Tindak Lanjut: [Aksi yang diambil]
+- Tanggal Selesai: [DD/MM/YYYY]
+
+### 2.2 Temuan Tinggi (High)
+- Deskripsi: [Detail temuan]
+- Risiko: [Tingkat risiko]
+- Rekomendasi: [Solusi yang disarankan]
+- Status: [Open/In Progress/Closed]
+- Tindak Lanjut: [Aksi yang diambil]
+- Tanggal Selesai: [DD/MM/YYYY]
+
+### 2.3 Temuan Sedang (Medium)
+- Deskripsi: [Detail temuan]
+- Risiko: [Tingkat risiko]
+- Rekomendasi: [Solusi yang disarankan]
+- Status: [Open/In Progress/Closed]
+- Tindak Lanjut: [Aksi yang diambil]
+- Tanggal Selesai: [DD/MM/YYYY]
+
+### 2.4 Temuan Rendah (Low)
+- Deskripsi: [Detail temuan]
+- Risiko: [Tingkat risiko]
+- Rekomendasi: [Solusi yang disarankan]
+- Status: [Open/In Progress/Closed]
+- Tindak Lanjut: [Aksi yang diambil]
+- Tanggal Selesai: [DD/MM/YYYY]
+
+## 3. Rencana Tindak Lanjut
+- Prioritas: [Urutan prioritas]
+- Timeline: [Jadwal penyelesaian]
+- Penanggung Jawab: [Nama penanggung jawab]
+- Status: [Progress]
+
+## 4. Verifikasi
+- Metode Verifikasi: [Cara verifikasi]
+- Hasil Verifikasi: [Hasil pengecekan]
+- Tanggal Verifikasi: [DD/MM/YYYY]
+- Verifikator: [Nama verifikator]
+
+## 5. Lampiran
+- [Daftar lampiran yang diperlukan] 

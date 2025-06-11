@@ -12,6 +12,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ResponseController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CryptoDemoController;
+use App\Http\Controllers\SensitiveDataController;
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -32,9 +34,24 @@ Route::prefix('results')->name('results.')->group(function () {
     Route::get('/{id}', [ResultController::class, 'show'])->name('show');
 });
 
-// Tambahkan route untuk user.form
-Route::prefix('user')->name('user.')->group(function () {
-    Route::get('/form', [UserController::class, 'form'])->name('form');
+// Protected Routes (memerlukan autentikasi)
+Route::middleware(['auth'])->group(function () {
+    // User Routes
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('/form', [UserController::class, 'form'])->name('form');
+    });
+
+    // Sensitive Data Routes
+    Route::prefix('sensitive-data')->name('sensitive-data.')->group(function () {
+        Route::get('/', [SensitiveDataController::class, 'index'])->name('index');
+        Route::post('/', [SensitiveDataController::class, 'store'])->name('store');
+    });
+
+    // Crypto Demo Routes
+    Route::prefix('crypto')->name('crypto.')->group(function () {
+        Route::get('/demo', [CryptoDemoController::class, 'index'])->name('demo');
+        Route::post('/encrypt', [CryptoDemoController::class, 'encrypt'])->name('encrypt');
+    });
 });
 
 // Admin Routes

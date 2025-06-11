@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class UserResponse extends Model
 {
-    use HasFactory;
+    use HasFactory, Encryptable;
 
     protected $fillable = [
         'name',
@@ -19,6 +20,11 @@ class UserResponse extends Model
         'gpu',
         'screen',
         'user_id'
+    ];
+
+    protected $encryptable = [
+        'name',
+        'program'
     ];
 
     protected $casts = [

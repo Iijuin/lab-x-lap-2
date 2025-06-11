@@ -1,0 +1,99 @@
+# Jadwal Penetration Testing Berkala
+
+## 1. Testing Harian
+### 1.1 Pengecekan Log Keamanan
+- Waktu: Setiap hari pukul 08:00 WIB
+- Penanggung Jawab: Tim Keamanan
+- Aktivitas:
+  * Review log akses
+  * Cek aktivitas mencurigakan
+  * Verifikasi backup
+
+### 1.2 Monitoring Aktivitas
+- Waktu: 24/7
+- Penanggung Jawab: Sistem Monitoring
+- Aktivitas:
+  * Alert untuk aktivitas mencurigakan
+  * Monitoring rate limiting
+  * Pengecekan IP mencurigakan
+
+## 2. Testing Mingguan
+### 2.1 Pemeriksaan Dependensi
+- Waktu: Setiap Senin
+- Penanggung Jawab: Tim Development
+- Aktivitas:
+  * Cek update package
+  * Scan kerentanan
+  * Update jika diperlukan
+
+### 2.2 Konfigurasi Keamanan
+- Waktu: Setiap Rabu
+- Penanggung Jawab: Tim Keamanan
+- Aktivitas:
+  * Review konfigurasi
+  * Verifikasi SSL/TLS
+  * Cek firewall rules
+
+## 3. Testing Bulanan
+### 3.1 Penetration Testing Internal
+- Waktu: Minggu pertama setiap bulan
+- Penanggung Jawab: Tim Keamanan
+- Aktivitas:
+  * Scan kerentanan
+  * Test akses
+  * Review hak akses
+
+### 3.2 Audit Log
+- Waktu: Minggu ketiga setiap bulan
+- Penanggung Jawab: Tim Keamanan
+- Aktivitas:
+  * Analisis log
+  * Review aktivitas
+  * Dokumentasi temuan
+
+## 4. Testing Triwulanan
+### 4.1 Penetration Testing Eksternal
+- Waktu: Setiap 3 bulan
+- Penanggung Jawab: Vendor Keamanan
+- Aktivitas:
+  * External penetration test
+  * Vulnerability assessment
+  * Security assessment
+
+### 4.2 Review Kebijakan
+- Waktu: Setiap 3 bulan
+- Penanggung Jawab: Tim Keamanan
+- Aktivitas:
+  * Update kebijakan
+  * Review SOP
+  * Update dokumentasi
+
+## 5. Testing Tahunan
+### 5.1 Penetration Testing Komprehensif
+- Waktu: Setiap tahun
+- Penanggung Jawab: Vendor Keamanan
+- Aktivitas:
+  * Full security assessment
+  * Comprehensive penetration test
+  * Risk assessment
+
+### 5.2 Pelatihan dan Review
+- Waktu: Setiap tahun
+- Penanggung Jawab: Tim Keamanan
+- Aktivitas:
+  * Pelatihan tim
+  * Review prosedur
+  * Update sistem
+
+## 6. Dokumentasi
+### 6.1 Format Laporan
+- Executive Summary
+- Temuan Detail
+- Rekomendasi
+- Rencana Tindak Lanjut
+
+### 6.2 Review dan Tindak Lanjut
+- Review hasil testing
+- Implementasi rekomendasi
+- Verifikasi perbaikan
+- Update dokumentasi 
