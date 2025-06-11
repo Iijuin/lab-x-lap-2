@@ -13,14 +13,17 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+    <!-- In your <head> section -->
+    <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;700&family=Xanh+Mono&display=swap" rel="stylesheet">
+
 
     <style>
         body {
-            font-family: 'Roboto Mono', monospace;
+            font-family: 'Xanh Mono', monospace;
             background-color: #f3f1f0;
         }
         .title {
-            font-family: 'Special Elite', cursive;
+            font-family: 'Martian Mono', monospace;
         }
         .input-field {
             background-color: #f3f1f0;
@@ -29,24 +32,24 @@
             font-size: 1rem;
             padding: 0.75rem 1rem;
             width: 100%;
-            border-radius: 0.5rem;
+            border-radius: 0rem;
             transition: all 0.3s ease;
         }
         .input-field:focus {
             outline: none;
-            border-color: #1e40af;
+            border-color:rgb(116, 133, 189);
             box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.2);
         }
         .btn-primary {
-            background-color: #1e40af;
+            background-color:rgb(31, 31, 32);
             color: white;
             font-size: 1rem;
             padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
+            border-radius: 60px;
             transition: all 0.3s ease;
         }
         .btn-primary:hover {
-            background-color: #1e3a8a;
+            background-color:rgb(165, 182, 230);
         }
         .btn-primary:focus {
             outline: none;
@@ -69,13 +72,13 @@
     </style>
 </head>
 <body>
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full space-y-8 bg-white rounded-lg p-8 shadow-lg">
+    <div class="min-h-screen flex items-center justify-center p-4 bg-[#f0edec]">
+        <div class="max-w-md w-full space-y-8 bg-white p-8 border border-[#6e6c8c]">
             <div>
                 <h2 class="title text-center text-[48px] font-light leading-[1] text-[#5a5858] mb-4">
-                    LOGIN<br/>ADMIN
+                    LOGIN ADMIN
                 </h2>
-                <p class="text-center text-xl text-[#6b6b6b]">Masuk ke panel admin</p>
+                <p class="text-center text-sm text-[#6b6b6b]">Masuk ke panel admin</p>
             </div>
             
             @if (session('admin_access_attempt') && session('warning'))

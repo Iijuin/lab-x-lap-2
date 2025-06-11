@@ -156,8 +156,8 @@
 @endsection
 
 @section('content')
-<div class="flex items-center max-w-[98vw] relative z-10">
-    <div class="flex flex-col justify-center mr-4 sm:mr-6 initial-hidden animate-fade-in-left">
+<div class="flex items-center min-w-[94vw] min-h-[98vh] relative z-10">
+    <div class="flex-col justify-center initial-hidden animate-fade-in-left">
         <span class="text-[1.5rem] font-normal text-[#6b6b6b] leading-none select-none hover-scale stagger-1">
             Temukan
         </span>
@@ -177,6 +177,8 @@
             Versi kamu sendiri
         </span>
     </div>
+
+    
 </div>
 
 <img alt="Silver laptop open at an angle showing keyboard and screen with blue geometric wallpaper" 
@@ -204,6 +206,8 @@
 <div id="tooltip" class="absolute z-20 bg-black text-white px-3 py-1 rounded-lg text-sm opacity-0 transition-all duration-300 pointer-events-none">
     Klik untuk mulai!
 </div>
+
+
 @endsection
 
 @section('scripts')
