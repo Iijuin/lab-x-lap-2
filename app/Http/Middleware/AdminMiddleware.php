@@ -24,7 +24,8 @@ class AdminMiddleware
                 'path' => $request->path()
             ]);
             
-            return redirect()->route('login')->with('warning', 'Silakan login terlebih dahulu untuk mengakses halaman admin.');
+            // Tampilkan view admin.login_required
+            return response()->view('admin.login_required');
         }
 
         if (!auth()->user()->is_admin) {

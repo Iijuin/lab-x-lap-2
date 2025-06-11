@@ -6,24 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-            $table->string('action'); // login, logout, role_change, permission_change, data_access
-            $table->string('ip_address', 45);
-            $table->string('user_agent')->nullable();
+            $table->string('action');
+            $table->string('ip_address');
+            $table->text('user_agent');
             $table->json('details')->nullable();
-            $table->string('status'); // success, failed, warning
+            $table->string('status');
             $table->timestamps();
-            
-            // Index untuk pencarian cepat
-            $table->index(['user_id', 'action', 'created_at']);
-            $table->index('ip_address');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('audit_logs');

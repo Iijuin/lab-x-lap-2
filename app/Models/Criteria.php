@@ -29,6 +29,8 @@ class Criteria extends Model
         'is_active' => 'boolean'
     ];
 
+    protected $table = 'criteria';
+
     // Get criteria ordered by priority
     public static function getByPriority()
     {

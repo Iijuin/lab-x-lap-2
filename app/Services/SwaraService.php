@@ -9,22 +9,23 @@ use App\Models\UserResponse;
 class SwaraService
 {
     /**
-     * Get laptop recommendations based on user preferences
+     * Mendapatkan rekomendasi laptop berdasarkan preferensi pengguna
+     * Menggunakan metode SWARA (Step-wise Weight Assessment Ratio Analysis)
      */
     public function getRecommendations(UserResponse $userResponse, $limit = 5)
     {
-        // Get active laptops
+        // Langkah 1: Ambil semua laptop yang aktif
         $laptops = Laptop::where('is_active', true)->get();
         
         if ($laptops->isEmpty()) {
             return collect();
         }
 
-        // Get criteria weights
+        // Langkah 2: Ambil bobot kriteria dari database
         $weights = Criteria::getWeightsArray();
         
         if (empty($weights)) {
-            // If no weights configured, use equal weights
+            // Jika tidak ada bobot yang dikonfigurasi, gunakan bobot yang sama
             $weights = [
                 'processor' => 0.167,
                 'ram' => 0.167,
@@ -35,20 +36,83 @@ class SwaraService
             ];
         }
 
-        // Filter laptops based on user preferences
+        // Langkah 3: Filter laptop berdasarkan preferensi pengguna
         $filteredLaptops = $this->filterByUserPreferences($laptops, $userResponse);
 
-        // Calculate SWARA scores
+        // Langkah 4: Hitung skor SWARA untuk setiap laptop
         $scoredLaptops = $this->calculateSwaraScores($filteredLaptops, $weights, $userResponse);
 
-        // Add formatted price and budget to each laptop
+        // Langkah 5: Tambahkan format harga dan budget untuk setiap laptop
         $scoredLaptops->each(function ($laptop) use ($userResponse) {
             $laptop->formatted_price = $this->formatRupiah($laptop->price);
             $laptop->formatted_budget = $this->formatBudgetRange($userResponse->budget);
         });
 
-        // Sort by score and return top recommendations
+        // Langkah 6: Urutkan berdasarkan skor dan ambil rekomendasi teratas
         return $scoredLaptops->sortByDesc('swara_score')->take($limit);
+    }
+
+    /**
+     * Menghitung skor SWARA untuk setiap laptop
+     * Implementasi metode SWARA:
+     * 1. Normalisasi nilai kriteria (0-1)
+     * 2. Hitung skor tertimbang untuk setiap kriteria
+     * 3. Tambahkan bonus preferensi
+     * 4. Hitung skor akhir
+     */
+    private function calculateSwaraScores($laptops, $weights, $userResponse)
+    {
+        return $laptops->map(function ($laptop) use ($weights, $userResponse) {
+            // Ambil skor normalisasi untuk setiap kriteria
+            $scores = $laptop->getCriteriaScores();
+            
+            // Hitung skor tertimbang dengan sub-kriteria
+            $totalScore = 0;
+            foreach ($weights as $criterion => $weight) {
+                if (isset($scores[$criterion])) {
+                    // Sub-kriteria Prosesor
+                    if ($criterion === 'processor') {
+                        $processorScore = $this->calculateProcessorScore($laptop->processor, $userResponse->activities);
+                        $totalScore += $processorScore * $weight;
+                    }
+                    // Sub-kriteria RAM
+                    else if ($criterion === 'ram') {
+                        $ramScore = $this->calculateRamScore($laptop->ram, $userResponse->activities);
+                        $totalScore += $ramScore * $weight;
+                    }
+                    // Sub-kriteria Penyimpanan
+                    else if ($criterion === 'storage') {
+                        $storageScore = $this->calculateStorageScore($laptop->storage, $userResponse->storage);
+                        $totalScore += $storageScore * $weight;
+                    }
+                    // Sub-kriteria GPU
+                    else if ($criterion === 'gpu') {
+                        $gpuScore = $this->calculateGpuScore($laptop->gpu, $userResponse->activities);
+                        $totalScore += $gpuScore * $weight;
+                    }
+                    // Sub-kriteria Layar
+                    else if ($criterion === 'screen') {
+                        $screenScore = $this->calculateScreenScore($laptop->screen_size, $userResponse->screen);
+                        $totalScore += $screenScore * $weight;
+                    }
+                    // Sub-kriteria Harga
+                    else if ($criterion === 'price') {
+                        $priceScore = $this->calculatePriceScore($laptop->price, $userResponse->budget);
+                        $totalScore += $priceScore * $weight;
+                    }
+                }
+            }
+
+            // Tambahkan bonus preferensi
+            $preferenceBonus = $this->calculatePreferenceBonus($laptop, $userResponse);
+            $finalScore = $totalScore + $preferenceBonus;
+
+            // Simpan skor akhir
+            $laptop->swara_score = round($finalScore, 4);
+            $laptop->preference_bonus = $preferenceBonus;
+            
+            return $laptop;
+        });
     }
 
     /**
@@ -70,62 +134,6 @@ class SwaraService
             $screenMatch = $this->checkScreenMatch($laptop->screen_size, $userResponse->screen);
 
             return $budgetMatch && $ramMatch && $gpuMatch && $screenMatch;
-        });
-    }
-
-    /**
-     * Calculate SWARA scores for laptops
-     */
-    private function calculateSwaraScores($laptops, $weights, $userResponse)
-    {
-        return $laptops->map(function ($laptop) use ($weights, $userResponse) {
-            $scores = $laptop->getCriteriaScores();
-            
-            // Calculate weighted score with sub-criteria
-            $totalScore = 0;
-            foreach ($weights as $criterion => $weight) {
-                if (isset($scores[$criterion])) {
-                    // Processor sub-criteria
-                    if ($criterion === 'processor') {
-                        $processorScore = $this->calculateProcessorScore($laptop->processor, $userResponse->activities);
-                        $totalScore += $processorScore * $weight;
-                    }
-                    // RAM sub-criteria
-                    else if ($criterion === 'ram') {
-                        $ramScore = $this->calculateRamScore($laptop->ram, $userResponse->activities);
-                        $totalScore += $ramScore * $weight;
-                    }
-                    // Storage sub-criteria
-                    else if ($criterion === 'storage') {
-                        $storageScore = $this->calculateStorageScore($laptop->storage, $userResponse->storage);
-                        $totalScore += $storageScore * $weight;
-                    }
-                    // GPU sub-criteria
-                    else if ($criterion === 'gpu') {
-                        $gpuScore = $this->calculateGpuScore($laptop->gpu, $userResponse->activities);
-                        $totalScore += $gpuScore * $weight;
-                    }
-                    // Screen sub-criteria
-                    else if ($criterion === 'screen') {
-                        $screenScore = $this->calculateScreenScore($laptop->screen_size, $userResponse->screen);
-                        $totalScore += $screenScore * $weight;
-                    }
-                    // Price sub-criteria
-                    else if ($criterion === 'price') {
-                        $priceScore = $this->calculatePriceScore($laptop->price, $userResponse->budget);
-                        $totalScore += $priceScore * $weight;
-                    }
-                }
-            }
-
-            // Add preference bonus
-            $preferenceBonus = $this->calculatePreferenceBonus($laptop, $userResponse);
-            $finalScore = $totalScore + $preferenceBonus;
-
-            $laptop->swara_score = round($finalScore, 4);
-            $laptop->preference_bonus = $preferenceBonus;
-            
-            return $laptop;
         });
     }
 

@@ -75,7 +75,7 @@
                                     <p class="text-sm text-gray-500">{{ $response->created_at->format('d M Y, H:i') }}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-sm font-medium">Budget: {{ ucfirst(str_replace('-', ' ', $response->budget)) }}</p>
+                                    <p class="text-sm font-medium">Budget: {{ str_replace(['-', 'm'], [' - ', ' juta'], $response->budget) }}</p>
                                     <p class="text-sm text-gray-500">{{ $response->program }}</p>
                                 </div>
                             </div>
@@ -87,76 +87,5 @@
             </div>
         </div>
     </div>
-<<<<<<< HEAD
-
-    <!-- Laptop Stats -->
-    <div class="bg-white rounded-lg shadow p-6 mb-8">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold text-gray-800">Statistik Laptop</h2>
-            <a href="{{ route('admin.laptops.index') }}" class="text-blue-600 hover:text-blue-800">
-                Lihat Semua <i class="fas fa-arrow-right ml-1"></i>
-            </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-blue-50 p-4 rounded-lg">
-                <h3 class="text-sm text-gray-500">Harga Rendah</h3>
-                <p class="text-2xl font-semibold text-gray-800">{{ $laptopStats['byPrice']['low'] }}</p>
-                <p class="text-sm text-gray-500">(< Rp10.000.000)</p>
-            </div>
-            <div class="bg-green-50 p-4 rounded-lg">
-                <h3 class="text-sm text-gray-500">Harga Menengah</h3>
-                <p class="text-2xl font-semibold text-gray-800">{{ $laptopStats['byPrice']['medium'] }}</p>
-                <p class="text-sm text-gray-500">(Rp10.000.000 - 15.000.000)</p>
-            </div>
-            <div class="bg-purple-50 p-4 rounded-lg">
-                <h3 class="text-sm text-gray-500">Harga Tinggi</h3>
-                <p class="text-2xl font-semibold text-gray-800">{{ $laptopStats['byPrice']['high'] }}</p>
-                <p class="text-sm text-gray-500">(> Rp15.000.000)</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Responses -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold text-gray-800">Respon Terbaru</h2>
-            <a href="{{ route('admin.responses.index') }}" class="text-green-600 hover:text-green-800">
-                Lihat Semua <i class="fas fa-arrow-right ml-1"></i>
-            </a>
-        </div>
-        <div class="space-y-4">
-            @forelse($recentResponses as $response)
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                        <p class="font-medium text-gray-800">{{ $response->name }}</p>
-                        <p class="text-sm text-gray-500">
-                            {{ $response->created_at->format('d M Y, H:i') }}
-                        </p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-medium text-gray-800">
-                            Budget: 
-                            @php
-                                $budgetRanges = [
-                                    'less-5m' => 'Di bawah Rp5.000.000',
-                                    '5m-8m' => 'Rp5.000.000 - Rp8.000.000',
-                                    '8m-12m' => 'Rp8.000.000 - Rp12.000.000',
-                                    '12m-15m' => 'Rp12.000.000 - Rp15.000.000',
-                                    'more-15m' => 'Di atas Rp15.000.000'
-                                ];
-                            @endphp
-                            {{ $budgetRanges[$response->budget] ?? $response->budget }}
-                        </p>
-                        <p class="text-sm text-gray-500">
-                            {{ $response->program }}
-                        </p>
-                    </div>
-                </div>
-            @empty
-                <p class="text-gray-500 text-center py-4">Belum ada rekomendasi</p>
-            @endforelse
-        </div>
-    </div>
-=======
->>>>>>> c0f83ff1020491b0892bd13129ef23db5ce92061
 </div>
+@endsection

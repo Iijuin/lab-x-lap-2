@@ -16,6 +16,12 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
+        // Jika ada status admin_required, pastikan alert tetap muncul
+        if (session('status') === 'admin_required') {
+            session()->flash('admin_access_attempt', true);
+            session()->flash('warning', 'Untuk mengakses panel admin, Anda harus login terlebih dahulu menggunakan akun admin. Silakan masukkan email dan password admin Anda.');
+        }
+        
         return view('auth.login');
     }
 
@@ -57,6 +63,13 @@ class LoginController extends Controller
             ]);
 
             $request->session()->regenerate();
+
+            // Redirect ke URL yang diakses sebelumnya jika ada
+            if (session()->has('url.intended')) {
+                $intendedUrl = session()->get('url.intended');
+                session()->forget('url.intended');
+                return redirect($intendedUrl);
+            }
 
             if (Auth::user()->is_admin) {
                 return redirect()->intended('admin');

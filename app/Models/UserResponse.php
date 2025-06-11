@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class UserResponse extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'program',
@@ -26,6 +29,11 @@ class UserResponse extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function recommendations()
+    {
+        return $this->hasMany(LaptopRecommendation::class);
     }
 
     // Helper methods to get budget range

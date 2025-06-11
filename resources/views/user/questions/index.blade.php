@@ -20,10 +20,10 @@
         border-bottom: 1px solid #6b6b6b;
         outline: none;
         font-family: "Roboto Mono", monospace;
-        font-size: 0.75rem;
+        font-size: 1.25rem;
         color: #6b6b6b;
         padding: 0.125rem 0;
-        width: 12rem;
+        width: 16rem;
     }
 
     input[type="text"]::placeholder {
@@ -33,7 +33,7 @@
     /* Custom select styling */
     select {
         font-family: "Roboto Mono", monospace;
-        font-size: 0.625rem;
+        font-size: 1.25rem;
         color: #6b6b6b;
         background: transparent;
         border: none;
@@ -42,13 +42,17 @@
         outline: none;
         box-shadow: none;
         cursor: pointer;
+        width: 100%;
     }
 
     select option {
         background: #f3f1f0;
         color: #3a3a3a;
         font-family: "Roboto Mono", monospace;
-        font-size: 0.625rem;
+        font-size: 1.25rem;
+        padding: 0.5rem;
+        white-space: normal;
+        word-wrap: break-word;
     }
 
     select option:checked {
@@ -79,11 +83,16 @@
     /* Arrow styling */
     .arrow-next {
         cursor: pointer;
-        transition: transform 0.2s ease;
+        transition: transform 0.2s;
     }
 
     .arrow-next:hover {
         transform: scale(1.1);
+    }
+
+    .arrow-next svg {
+        width: 60px;
+        height: 60px;
     }
 
     .arrow-disabled {
@@ -112,6 +121,101 @@
         color: #f0eeec;
         border-color: #5a5858;
     }
+
+    /* Question styling */
+    .question-title {
+        font-family: "Roboto Mono", monospace;
+        font-size: 2.5rem;
+        line-height: 1.2;
+        color: #4a4a4a;
+        margin-bottom: 2.5rem;
+    }
+
+    /* Option styling */
+    .option-label {
+        font-family: "Roboto Mono", monospace;
+        font-size: 1.25rem;
+        padding: 1rem 1.5rem;
+    }
+
+    /* Spec option styling */
+    .spec-option {
+        font-family: "Roboto Mono", monospace;
+        font-size: 1.25rem;
+        padding: 1rem 1.5rem;
+    }
+
+    /* Container styling */
+    .question-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 2rem 4rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Section styling */
+    .question-section {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    /* Form styling */
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+    }
+
+    /* Bio form styling */
+    .bio-form {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+        gap: 4rem;
+    }
+
+    .bio-title {
+        flex: 0 0 300px;
+    }
+
+    .bio-inputs {
+        flex: 0 0 500px;
+    }
+
+    /* Specs container styling */
+    .specs-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+        gap: 4rem;
+    }
+
+    /* Specs title styling */
+    .specs-title {
+        flex: 0 0 300px;
+    }
+
+    /* Specs options styling */
+    .specs-options {
+        flex: 0 0 auto;
+        display: flex;
+        gap: 4rem;
+    }
+
+    /* Header styling */
+    .question-header {
+        font-size: 1.25rem;
+        margin-bottom: 3rem;
+    }
 </style>
 @endsection
 
@@ -119,39 +223,43 @@
 <div class="min-h-screen flex flex-col">
     <!-- Step 1: Bio Data -->
     <div id="step1" class="step active">
-        <main class="flex flex-1 px-6 py-8">
-            <div class="flex flex-col justify-center flex-1 max-w-xs">
-                <h1 class="text-[5rem] font-normal leading-[4.5rem] text-[#6b6b6b] select-none">
-                    BIO<br/>DATA
-                </h1>
-            </div>
-            
-            <form class="flex flex-col justify-center flex-1 max-w-md space-y-6 text-[#6b6b6b] text-[0.75rem] font-normal leading-tight ml-20" id="bioForm">
-                <div class="flex items-center space-x-4">
-                    <label class="w-20 select-none" for="name">
-                        Nama
-                    </label>
-                    <input autocomplete="off" id="name" name="name" type="text" required/>
+        <div class="form-container">
+            <div class="bio-form">
+                <div class="bio-title">
+                    <h1 class="text-[5rem] font-normal leading-[4.5rem] text-[#6b6b6b] select-none">
+                        BIO<br/>DATA
+                    </h1>
                 </div>
                 
-                <div class="flex items-start space-x-4">
-                    <label class="w-20 select-none pt-1" for="program">
-                        Program Studi
-                    </label>
-                    <div class="flex flex-col space-y-1">
-                        <select class="w-48 cursor-pointer" id="program" name="program" size="3" required>
-                            <option value="Teknik Informatika">Teknik Informatika</option>
-                            <option value="Teknik Multimedia Digital">Teknik Multimedia Digital</option>
-                            <option value="Teknik Multimedia Jaringan">Teknik Multimedia Jaringan</option>
-                        </select>
-                    </div>
+                <div class="bio-inputs">
+                    <form class="flex flex-col space-y-8 text-[#6b6b6b] font-normal leading-tight" id="bioForm">
+                        <div class="flex items-center space-x-6">
+                            <label class="w-32 select-none text-xl" for="name">
+                                Nama
+                            </label>
+                            <input autocomplete="off" id="name" name="name" type="text" required/>
+                        </div>
+                        
+                        <div class="flex items-start space-x-6">
+                            <label class="w-32 select-none pt-1 text-xl" for="program">
+                                Program Studi
+                            </label>
+                            <div class="flex flex-col space-y-1">
+                                <select class="w-[400px] cursor-pointer" id="program" name="program" size="3" required>
+                                    <option value="Teknik Informatika">Teknik Informatika</option>
+                                    <option value="Teknik Multimedia Digital">Teknik Multimedia Digital</option>
+                                    <option value="Teknik Multimedia Jaringan">Teknik Multimedia Jaringan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </main>
+            </div>
+        </div>
         
-        <footer class="flex justify-end px-6 py-4">
+        <footer class="flex justify-end px-12 py-4">
             <div class="arrow-next" onclick="nextStep(1)" id="arrow1">
-                <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#6b6b6b]">
+                <svg width="60" height="60" viewBox="0 0 40 40" class="text-[#6b6b6b]">
                     <path d="M15 12l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45 20 20)"/>
                 </svg>
             </div>
@@ -160,160 +268,163 @@
 
     <!-- Step 2: Questions -->
     <div id="step2" class="step">
+        <div class="question-container">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20 mb-12">
+                <div class="text-xl font-normal text-[#7a7a7a]">1</div>
+                <div class="text-xl font-normal text-[#7a7a7a] text-right">Kebutuhan &amp; Preferensi</div>
+            </div>
 
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20">
-            <div class="text-[12px] font-normal text-[#7a7a7a]">1</div>
-            <div class="text-[12px] font-normal text-[#7a7a7a] text-right mb-2">Kebutuhan &amp; Preferensi</div>
-        </div>
-
-        <main class="flex-grow px-6 pt-6 max-w-7xl mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-start gap-10 sm:gap-0">
-            
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20">
+            <div class="flex flex-col sm:flex-row sm:justify-center sm:items-start gap-16 sm:gap-32">
                 <!-- Activities Section -->
-                <section class="max-w-[320px]">
-                    <h2 class="text-[20px] leading-[1.1] font-normal mb-4 text-[#4a4a4a]">
+                <section class="question-section">
+                    <h2 class="question-title">
                         Apa kegiatan utama yang<br />
                         kamu lakukan yang<br />
                         menggunakan laptop?
                     </h2>
                     
-                    <form class="flex flex-col gap-1" id="activitiesForm">
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
-                            <input type="checkbox" name="activity" value="programming" class="w-3 h-3" />
+                    <form class="flex flex-col gap-3" id="activitiesForm">
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
+                            <input type="checkbox" name="activity" value="programming" class="w-5 h-5" />
                             Programming/Coding
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
-                            <input type="checkbox" name="activity" value="desain" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
+                            <input type="checkbox" name="activity" value="desain" class="w-5 h-5" />
                             Desain Grafis/Multimedia
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
-                            <input type="checkbox" name="activity" value="machine-learning" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
+                            <input type="checkbox" name="activity" value="machine-learning" class="w-5 h-5" />
                             Machine Learning/AI
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
-                            <input type="checkbox" name="activity" value="game-dev" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
+                            <input type="checkbox" name="activity" value="game-dev" class="w-5 h-5" />
                             Pengembangan Game
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
-                            <input type="checkbox" name="activity" value="office" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
+                            <input type="checkbox" name="activity" value="office" class="w-5 h-5" />
                             Office/Produktivitas
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
-                            <input type="checkbox" name="activity" value="network" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
+                            <input type="checkbox" name="activity" value="network" class="w-5 h-5" />
                             Network Configurating
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 text-[10px] font-normal bg-[#d9d9d9] text-[#4a4a4a] px-2 py-[2px] w-max">
-                            <input type="checkbox" name="activity" value="database" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
+                            <input type="checkbox" name="activity" value="database" class="w-5 h-5" />
                             Database
                         </label>
                     </form>
                 </section>
 
                 <!-- Budget Section -->
-                <section class="max-w-[320px]">
-                    <h2 class="text-[20px] leading-[1.1] font-normal mb-4 text-[#4a4a4a]">
+                <section class="question-section">
+                    <h2 class="question-title">
                         Berapa <em>budget</em> ideal untuk<br />
                         laptop mahasiswa TIK<br />
                         menurut kamu?
                     </h2>
                     
-                    <form class="flex flex-col gap-1 text-[10px] font-normal text-[#4a4a4a]" id="budgetForm">
-                        <label class="option-label inline-flex items-center gap-2 bg-[#d9d9d9] px-2 py-[2px] w-max">
-                            <input type="radio" name="budget" value="less-5m" class="w-3 h-3" />
+                    <form class="flex flex-col gap-3" id="budgetForm">
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] w-max">
+                            <input type="radio" name="budget" value="less-5m" class="w-5 h-5" />
                             &lt; Rp5.000.000
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 bg-[#e6e6e6] px-2 py-[2px] w-max">
-                            <input type="radio" name="budget" value="5m-8m" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#e6e6e6] w-max">
+                            <input type="radio" name="budget" value="5m-8m" class="w-5 h-5" />
                             Rp5.000.000 - 8.000.000
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 bg-[#d9d9d9] px-2 py-[2px] w-max">
-                            <input type="radio" name="budget" value="8m-12m" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] w-max">
+                            <input type="radio" name="budget" value="8m-12m" class="w-5 h-5" />
                             Rp8.000.000 - 12.000.000
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 bg-[#e6e6e6] px-2 py-[2px] w-max">
-                            <input type="radio" name="budget" value="12m-15m" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#e6e6e6] w-max">
+                            <input type="radio" name="budget" value="12m-15m" class="w-5 h-5" />
                             Rp12.000.000 - 15.000.000
                         </label>
-                        <label class="option-label inline-flex items-center gap-2 bg-[#d9d9d9] px-2 py-[2px] w-max">
-                            <input type="radio" name="budget" value="more-15m" class="w-3 h-3" />
+                        <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] w-max">
+                            <input type="radio" name="budget" value="more-15m" class="w-5 h-5" />
                             &gt;Rp15.000.000
                         </label>
                     </form>
                 </section>
             </div>
-        </main>
+        </div>
 
-       <footer class="flex justify-between items-center w-full max-w-full mx-auto mt-10 px-10">
-    <!-- Back Arrow -->
+        <footer class="flex justify-between items-center w-full max-w-full mx-auto mt-12 px-12">
+            <!-- Back Arrow -->
             <div class="arrow-next" onclick="prevStep(1)">
-                <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#7a7a7a]">
+                <svg width="60" height="60" viewBox="0 0 40 40" class="text-[#7a7a7a]">
                     <path d="M25 12l-8 8 8 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 20 20)"/>
                 </svg>
             </div>
 
             <!-- Next Arrow -->
             <div class="arrow-next" onclick="nextStep(2)" id="arrow2">
-                <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#7a7a7a]">
+                <svg width="60" height="60" viewBox="0 0 40 40" class="text-[#7a7a7a]">
                     <path d="M15 12l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45 20 20)"/>
                 </svg>
             </div>
         </footer>
-
     </div>
 
     <!-- Step 3: RAM & Storage -->
     <div id="step3" class="step">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20">
-            <div class="text-[12px] font-normal text-[#7a7a7a]">1</div>
-            <div class="text-[12px] font-normal text-[#7a7a7a] text-right mb-2">Kebutuhan &amp; Preferensi</div>
-        </div>
-        
-        <div class="flex flex-1 justify-center items-center px-6">
-            <div class="mr-20 leading-none">
-                <div class="text-[12px] mb-1 text-[#5a5858]">Spesifikasi</div>
-                <div class="text-[40px] font-light leading-[1] text-[#5a5858]">
-                    RAM &<br />
-                    PENYIM<br />
-                    PANAN
-                </div>
+        <div class="question-container">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20 mb-12">
+                <div class="text-xl font-normal text-[#7a7a7a]">1</div>
+                <div class="text-xl font-normal text-[#7a7a7a] text-right">Kebutuhan &amp; Preferensi</div>
             </div>
             
-            <div class="flex space-x-20">
-                <!-- RAM Section -->
-                <div>
-                    <div class="text-[18px] underline mb-3 font-light text-[#5a5858]">RAM</div>
-                    <div class="space-y-1 text-[10px] font-normal" id="ramOptions">
-                        <div class="spec-option px-1 py-[2px] w-[60px]" data-type="ram" data-value="4gb">4 GB</div>
-                        <div class="spec-option px-1 py-[2px] w-[60px]" data-type="ram" data-value="8gb">8 GB</div>
-                        <div class="spec-option px-1 py-[2px] w-[60px]" data-type="ram" data-value="16gb">16 GB</div>
-                        <div class="spec-option px-1 py-[2px] w-[90px]" data-type="ram" data-value="32gb">32 GB/Lebih</div>
+            <div class="specs-container">
+                <!-- Title Section -->
+                <div class="specs-title">
+                    <div class="leading-none">
+                        <div class="text-xl mb-2 text-[#5a5858]">Spesifikasi</div>
+                        <div class="text-[48px] font-light leading-[1] text-[#5a5858]">
+                            RAM &<br />
+                            PENYIM<br />
+                            PANAN
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Storage Section -->
-                <div>
-                    <div class="text-[18px] underline mb-3 font-light text-[#5a5858]">Penyimpanan</div>
-                    <div class="space-y-1 text-[10px] font-normal" id="storageOptions">
-                        <div class="spec-option px-1 py-[2px] w-[90px]" data-type="storage" data-value="hdd-500gb">HDD 500 GB</div>
-                        <div class="spec-option px-1 py-[2px] w-[90px]" data-type="storage" data-value="hdd-1tb">HDD 1 TB</div>
-                        <div class="spec-option px-1 py-[2px] w-[90px]" data-type="storage" data-value="ssd-256gb">SSD 256 GB</div>
-                        <div class="spec-option px-1 py-[2px] w-[130px]" data-type="storage" data-value="ssd-1tb">SSD 1 TB (atau Lebih)</div>
+                <!-- Options Section -->
+                <div class="specs-options">
+                    <!-- RAM Section -->
+                    <div>
+                        <div class="text-2xl underline mb-8 font-light text-[#5a5858]">RAM</div>
+                        <div class="space-y-4" id="ramOptions">
+                            <div class="spec-option w-[160px]" data-type="ram" data-value="4gb">4 GB</div>
+                            <div class="spec-option w-[160px]" data-type="ram" data-value="8gb">8 GB</div>
+                            <div class="spec-option w-[160px]" data-type="ram" data-value="16gb">16 GB</div>
+                            <div class="spec-option w-[200px]" data-type="ram" data-value="32gb">32 GB/Lebih</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Storage Section -->
+                    <div>
+                        <div class="text-2xl underline mb-8 font-light text-[#5a5858]">Penyimpanan</div>
+                        <div class="space-y-4" id="storageOptions">
+                            <div class="spec-option w-[200px]" data-type="storage" data-value="hdd-500gb">HDD 500GB</div>
+                            <div class="spec-option w-[200px]" data-type="storage" data-value="hdd-1tb">HDD 1TB</div>
+                            <div class="spec-option w-[200px]" data-type="storage" data-value="ssd-256gb">SSD 256GB</div>
+                            <div class="spec-option w-[200px]" data-type="storage" data-value="ssd-1tb">SSD 1TB</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <footer class="flex justify-between px-6 pb-6">
+        <footer class="flex justify-between px-12 pb-6">
             <!-- Back Arrow -->
             <div class="arrow-next" onclick="prevStep(2)">
-                <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#7a7a7a]">
+                <svg width="60" height="60" viewBox="0 0 40 40" class="text-[#7a7a7a]">
                     <path d="M25 12l-8 8 8 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 20 20)"/>
                 </svg>
             </div>
             
             <!-- Next Arrow -->
             <div class="arrow-next" onclick="nextStep(3)" id="arrow3">
-                <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#7a7a7a]">
+                <svg width="60" height="60" viewBox="0 0 40 40" class="text-[#7a7a7a]">
                     <path d="M15 12l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45 20 20)"/>
                 </svg>
             </div>
@@ -322,64 +433,68 @@
 
     <!-- Step 4: GPU & Screen -->
     <div id="step4" class="step">
-        <div class="flex justify-between px-6 pt-6 text-[12px] leading-none">
-            <div>3</div>
-            <div>Spesifikasi minimum yang kamu rekomendasikan</div>
-        </div>
-        
-        <div class="min-h-screen flex items-center justify-center p-6" style="background-color: #f3f0ec;">
-            <div class="max-w-7xl w-full flex flex-col sm:flex-row justify-between items-center sm:items-start text-[#555555]">
+        <div class="question-container">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:flex-grow gap-10 sm:gap-20 mb-12">
+                <div class="text-xl font-normal text-[#7a7a7a]">1</div>
+                <div class="text-xl font-normal text-[#7a7a7a] text-right">Kebutuhan &amp; Preferensi</div>
+            </div>
+            
+            <div class="specs-container">
                 <!-- Title Section -->
-                <div class="w-full sm:w-1/4 flex flex-col items-start">
-                    <p class="text-[12px] mb-1 select-none">Spesifikasi</p>
-                    <h1 class="text-[40px] font-light leading-[1.1] select-none" style="font-family: 'Special Elite', cursive;">GPU &<br />LAYAR</h1>
-                </div>
-                
-                <!-- GPU Section -->
-                <div class="w-full sm:w-1/3 flex flex-col items-center sm:items-start mt-10 sm:mt-0">
-                    <h2 class="text-[20px] mb-4 select-none" style="font-family: 'Special Elite', cursive;">GPU</h2>
-                    <div class="space-y-1 w-full max-w-xs text-[10px]" id="gpuOptions">
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="gpu" data-value="no-gpu">Tidak memerlukan GPU khusus</div>
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="gpu" data-value="integrated">GPU integrasi terbaru</div>
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="gpu" data-value="entry-level">GPU entry level (NVIDIA GTX 1650/AMD Setara)</div>
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="gpu" data-value="mid-range">GPU mid-range (NVIDIA RTX 3050/AMD setara)</div>
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="gpu" data-value="high-end">GPU high-end (NVIDIA RTX 3060/AMD setara)</div>
+                <div class="specs-title">
+                    <div class="leading-none">
+                        <div class="text-xl mb-2 text-[#5a5858]">Spesifikasi</div>
+                        <div class="text-[48px] font-light leading-[1] text-[#5a5858]">
+                            GPU &<br />
+                            LAYAR
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Screen Section -->
-                <div class="w-full sm:w-1/3 flex flex-col items-center sm:items-start mt-10 sm:mt-0">
-                    <h2 class="text-[20px] mb-4 select-none text-center sm:text-left" style="font-family: 'Special Elite', cursive;">Ukuran &<br />Resolusi Layar</h2>
-                    <div class="space-y-1 w-full max-w-xs text-[10px]" id="screenOptions">
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="screen" data-value="13-14-inch">13-14 inch <span class="italic font-normal">(compact)</span></div>
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="screen" data-value="15-16-inch">15-16 inch <span class="italic font-normal">(standard)</span></div>
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="screen" data-value="17-inch">17 inch <span class="italic font-normal">(desktop replacement)</span></div>
-                        <div class="spec-option border border-gray-400 rounded px-2 py-[2px] select-none" data-type="screen" data-value="high-res">High Resolution (1440p/4K)</div>
+                <!-- Options Section -->
+                <div class="specs-options">
+                    <!-- GPU Section -->
+                    <div>
+                        <div class="text-2xl underline mb-8 font-light text-[#5a5858]">GPU</div>
+                        <div class="space-y-4" id="gpuOptions">
+                            <div class="spec-option w-[240px]" data-type="gpu" data-value="no-gpu">Tidak ada GPU</div>
+                            <div class="spec-option w-[240px]" data-type="gpu" data-value="integrated">GPU Terintegrasi</div>
+                            <div class="spec-option w-[240px]" data-type="gpu" data-value="entry-level">GPU Entry Level</div>
+                            <div class="spec-option w-[240px]" data-type="gpu" data-value="mid-range">GPU Mid Range</div>
+                            <div class="spec-option w-[240px]" data-type="gpu" data-value="high-end">GPU High End</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Screen Section -->
+                    <div>
+                        <div class="text-2xl underline mb-8 font-light text-[#5a5858]">Layar</div>
+                        <div class="space-y-4" id="screenOptions">
+                            <div class="spec-option w-[200px]" data-type="screen" data-value="13-14-inch">13-14 inch</div>
+                            <div class="spec-option w-[200px]" data-type="screen" data-value="15-16-inch">15-16 inch</div>
+                            <div class="spec-option w-[200px]" data-type="screen" data-value="17-inch">17 inch</div>
+                            <div class="spec-option w-[200px]" data-type="screen" data-value="high-res">High Resolution</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <footer class="flex justify-between px-6 pb-6">
+        <footer class="flex justify-between px-12 pb-6">
             <!-- Back Arrow -->
             <div class="arrow-next" onclick="prevStep(3)">
-                <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#7a7a7a]">
+                <svg width="60" height="60" viewBox="0 0 40 40" class="text-[#7a7a7a]">
                     <path d="M25 12l-8 8 8 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 20 20)"/>
                 </svg>
             </div>
             
             <!-- Next Arrow -->
             <div class="arrow-next" onclick="submitForm()" id="arrow4">
-                <svg width="40" height="40" viewBox="0 0 40 40" class="text-[#7a7a7a]">
+                <svg width="60" height="60" viewBox="0 0 40 40" class="text-[#7a7a7a]">
                     <path d="M15 12l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45 20 20)"/>
                 </svg>
             </div>
         </footer>
     </div>
-
-    
-        
-
 </div>
 @endsection
 

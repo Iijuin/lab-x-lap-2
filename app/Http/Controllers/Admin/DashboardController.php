@@ -12,6 +12,17 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Jika user belum login, tampilkan halaman login required
+        if (!auth()->check()) {
+            return view('admin.login_required');
+        }
+
+        // Jika user bukan admin, redirect ke home
+        if (!auth()->user()->is_admin) {
+            return redirect()->route('home')->with('error', 'Akses ditolak. Anda bukan admin.');
+        }
+
+        // Jika user adalah admin, tampilkan dashboard
         $totalLaptops = Laptop::count();
         $totalResponses = UserResponse::count();
         $totalCriteria = Criteria::count();

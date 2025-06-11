@@ -63,6 +63,7 @@ class ResultController extends Controller
             
             // Include laptop even if score is 0, but with lower priority
             $laptop->score = $score;
+            $laptop->swara_score = $score / 100;
             $recommendations[] = $laptop;
         }
 
@@ -70,28 +71,6 @@ class ResultController extends Controller
         usort($recommendations, function ($a, $b) {
             return $b->score <=> $a->score;
         });
-
-        // If no recommendations with score > 0, get all laptops and sort by closest match
-        if (empty($recommendations)) {
-            $allLaptops = Laptop::all();
-            foreach ($allLaptops as $laptop) {
-                $score = $this->calculateCompatibilityScore($laptop, $userResponse);
-                $laptop->score = $score;
-                $recommendations[] = $laptop;
-            }
-            
-            // Sort by score and then by price difference
-            usort($recommendations, function ($a, $b) use ($userResponse) {
-                $budgetCenter = ($userResponse->min_budget + $userResponse->max_budget) / 2;
-                $aPriceDiff = abs($a->price - $budgetCenter);
-                $bPriceDiff = abs($b->price - $budgetCenter);
-                
-                if ($b->score === $a->score) {
-                    return $aPriceDiff <=> $bPriceDiff;
-                }
-                return $b->score <=> $a->score;
-            });
-        }
 
         // Return top 6 recommendations
         return array_slice($recommendations, 0, 6);
@@ -130,41 +109,27 @@ class ResultController extends Controller
             switch ($activity) {
                 case 'programming':
                     if (stripos($laptop->processor, 'i5') !== false || 
-                        stripos($laptop->processor, 'i7') !== false ||
-                        stripos($laptop->processor, 'ryzen') !== false) {
-                        $activityScore += 8;
-                    }
-                    if (isset($laptop->ram) && $laptop->ram >= 8) {
-                        $activityScore += 7;
-                    }
-                    break;
-                    
-                case 'desain':
-                    if (isset($laptop->graphics) && 
-                        (stripos($laptop->graphics, 'gtx') !== false || 
-                         stripos($laptop->graphics, 'rtx') !== false ||
-                         stripos($laptop->graphics, 'radeon') !== false)) {
+                        stripos($laptop->processor, 'ryzen 5') !== false) {
                         $activityScore += 10;
                     }
-                    if (isset($laptop->screen_size) && $laptop->screen_size >= 15) {
+                    if (stripos($laptop->processor, 'i7') !== false || 
+                        stripos($laptop->processor, 'ryzen 7') !== false) {
                         $activityScore += 5;
                     }
                     break;
                     
                 case 'machine-learning':
-                    if (isset($laptop->graphics) && 
-                        (stripos($laptop->graphics, 'rtx') !== false || 
-                         stripos($laptop->graphics, 'gtx 1660') !== false)) {
-                        $activityScore += 15;
+                    if (stripos($laptop->processor, 'i7') !== false || 
+                        stripos($laptop->processor, 'ryzen 7') !== false) {
+                        $activityScore += 10;
                     }
-                    if (isset($laptop->ram) && $laptop->ram >= 16) {
+                    if (stripos($laptop->gpu, 'rtx') !== false) {
                         $activityScore += 10;
                     }
                     break;
                     
                 case 'game-dev':
-                    if (isset($laptop->graphics) && 
-                        stripos($laptop->graphics, 'rtx') !== false) {
+                    if (stripos($laptop->gpu, 'rtx') !== false) {
                         $activityScore += 12;
                     }
                     if (stripos($laptop->processor, 'i7') !== false || 
