@@ -284,8 +284,11 @@
                     </h2>
                     
                     <form class="flex flex-col gap-3" id="activitiesForm">
+                        <div class="text-sm text-red-600 mb-2" id="activityWarning" style="display: none;">
+                            Anda hanya dapat memilih maksimal 3 kegiatan
+                        </div>
                         <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
-                            <input type="checkbox" name="activity" value="programming" class="w-5 h-5" />
+                            <input type="checkbox" name="activity" value="programming" class="w-5 h-5 activity-checkbox" />
                             Programming/Coding
                         </label>
                         <label class="option-label inline-flex items-center gap-3 bg-[#d9d9d9] text-[#4a4a4a] w-max">
@@ -535,6 +538,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Activity checkbox limit
+    const activityCheckboxes = document.querySelectorAll('.activity-checkbox');
+    const activityWarning = document.getElementById('activityWarning');
+    const maxActivities = 3;
+
+    activityCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checkedBoxes = document.querySelectorAll('.activity-checkbox:checked');
+            
+            if (checkedBoxes.length > maxActivities) {
+                this.checked = false;
+                activityWarning.style.display = 'block';
+                setTimeout(() => {
+                    activityWarning.style.display = 'none';
+                }, 3000);
+            } else {
+                activityWarning.style.display = 'none';
+            }
+        });
+    });
+
     // Validate bio form
     function validateBioForm() {
         const name = document.getElementById('name').value.trim();
@@ -547,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateQuestionsForm() {
         const activities = document.querySelectorAll('input[name="activity"]:checked');
         const budget = document.querySelector('input[name="budget"]:checked');
-        return activities.length > 0 && budget !== null;
+        return activities.length > 0 && activities.length <= maxActivities && budget !== null;
     }
 
     // Validate specs form

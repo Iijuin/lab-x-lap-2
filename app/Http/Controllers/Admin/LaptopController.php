@@ -87,15 +87,13 @@ class LaptopController extends Controller
             ->with('success', 'Laptop berhasil diperbarui');
     }
 
-    public function destroy(Laptop $laptop)
+    public function toggleStatus(Laptop $laptop)
     {
-        if ($laptop->image) {
-            Storage::disk('public')->delete($laptop->image);
-        }
-        
-        $laptop->delete();
+        $laptop->is_active = !$laptop->is_active;
+        $laptop->save();
 
+        $status = $laptop->is_active ? 'diaktifkan' : 'dinonaktifkan';
         return redirect()->route('admin.laptops.index')
-            ->with('success', 'Laptop berhasil dihapus');
+            ->with('success', "Laptop berhasil {$status}");
     }
 }

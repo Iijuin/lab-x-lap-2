@@ -52,14 +52,6 @@ class SwaraService
         return $scoredLaptops->sortByDesc('swara_score')->take($limit);
     }
 
-    /**
-     * Menghitung skor SWARA untuk setiap laptop
-     * Implementasi metode SWARA:
-     * 1. Normalisasi nilai kriteria (0-1)
-     * 2. Hitung skor tertimbang untuk setiap kriteria
-     * 3. Tambahkan bonus preferensi
-     * 4. Hitung skor akhir
-     */
     private function calculateSwaraScores($laptops, $weights, $userResponse)
     {
         return $laptops->map(function ($laptop) use ($weights, $userResponse) {
@@ -287,8 +279,11 @@ class SwaraService
             $score += 0.4;
         }
         
-        // Check for specific activities
+        // Check for specific activities (max 3 activities)
+        $activityCount = 0;
         foreach ($activities as $activity) {
+            if ($activityCount >= 3) break;
+            
             switch ($activity) {
                 case 'machine-learning':
                     if (strpos($processor, 'i7') !== false || strpos($processor, 'i9') !== false || 
@@ -302,6 +297,7 @@ class SwaraService
                     }
                     break;
             }
+            $activityCount++;
         }
         
         return min($score, 1.0);
@@ -320,14 +316,18 @@ class SwaraService
         else if ($ramValue >= 8) $score += 0.2;
         else if ($ramValue >= 4) $score += 0.1;
         
-        // Activity-based scoring
+        // Activity-based scoring (max 3 activities)
+        $activityCount = 0;
         foreach ($activities as $activity) {
+            if ($activityCount >= 3) break;
+            
             if (in_array($activity, ['machine-learning', 'game-dev']) && $ramValue >= 16) {
                 $score += 0.3;
             }
             if (in_array($activity, ['programming', 'desain']) && $ramValue >= 8) {
                 $score += 0.2;
             }
+            $activityCount++;
         }
         
         return min($score, 1.0);
@@ -376,8 +376,11 @@ class SwaraService
             $score += 0.25;
         }
         
-        // Activity-based scoring
+        // Activity-based scoring (max 3 activities)
+        $activityCount = 0;
         foreach ($activities as $activity) {
+            if ($activityCount >= 3) break;
+            
             if (in_array($activity, ['machine-learning', 'game-dev', 'desain'])) {
                 if (strpos($gpu, 'RTX') !== false) {
                     $score += 0.3;
@@ -385,6 +388,7 @@ class SwaraService
                     $score += 0.2;
                 }
             }
+            $activityCount++;
         }
         
         return min($score, 1.0);

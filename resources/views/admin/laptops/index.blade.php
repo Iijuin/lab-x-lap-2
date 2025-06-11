@@ -72,17 +72,14 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
                                 <a href="{{ route('admin.laptops.edit', $laptop) }}" 
-                                   class="text-indigo-600 hover:text-indigo-900">
+                                   class="text-blue-600 hover:text-blue-900">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('admin.laptops.destroy', $laptop) }}" 
-                                      method="POST" 
-                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus laptop ini?');"
-                                      class="inline">
+                                <form action="{{ route('admin.laptops.toggle-status', $laptop) }}" method="POST" class="inline">
                                     @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">
-                                        <i class="fas fa-trash"></i>
+                                    <button type="submit" 
+                                            class="text-{{ $laptop->is_active ? 'yellow' : 'green' }}-600 hover:text-{{ $laptop->is_active ? 'yellow' : 'green' }}-900">
+                                        <i class="fas fa-{{ $laptop->is_active ? 'ban' : 'check' }}"></i>
                                     </button>
                                 </form>
                             </div>

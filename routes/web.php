@@ -10,6 +10,8 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ResponseController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -44,6 +46,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
         // Laptop Management
         Route::resource('laptops', LaptopController::class);
+        Route::post('laptops/{laptop}/toggle-status', [LaptopController::class, 'toggleStatus'])->name('laptops.toggle-status');
         
         // Criteria Management
         Route::get('/criteria', [CriteriaController::class, 'index'])->name('criteria.index');
@@ -53,3 +56,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('responses/{response}', [ResponseController::class, 'show'])->name('responses.show');
     });
 });
+
+// Password Reset Routes
+Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('password.request');
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
+Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+    ->name('password.reset');
+Route::post('reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');

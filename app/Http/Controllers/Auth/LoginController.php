@@ -49,7 +49,7 @@ class LoginController extends Controller
         }
 
         // Coba login
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             // Login berhasil
             LoginAttempt::create([
                 'email' => $credentials['email'],
