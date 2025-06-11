@@ -35,10 +35,18 @@ Route::prefix('user')->name('user.')->group(function () {
 });
 
 // Admin Routes
-Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-        
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('warning', 'Silakan login terlebih dahulu untuk mengakses halaman admin.');
+        }
+        if (!auth()->user()->is_admin) {
+            return redirect()->route('home')->with('error', 'Akses ditolak. Anda bukan admin.');
+        }
+        return app(DashboardController::class)->index();
+    })->name('dashboard');
+
+    Route::middleware(['auth', 'admin'])->group(function () {
         // Laptop Management
         Route::resource('laptops', LaptopController::class);
         
@@ -50,4 +58,14 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
         Route::get('responses', [App\Http\Controllers\Admin\ResponseController::class, 'index'])->name('responses.index');
         Route::get('responses/{response}', [App\Http\Controllers\Admin\ResponseController::class, 'show'])->name('responses.show');
     });
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/questions', [QuestionController::class, 'index'])->name('questions.index');
+    Route::post('/questions/submit', [QuestionController::class, 'store'])->name('questions.store');
+    Route::get('/questions/options', [QuestionController::class, 'getFormOptions'])->name('questions.options');
+    
+    Route::get('/results/{userResponse}', [ResultController::class, 'show'])
+        ->middleware('check.response.ownership')
+        ->name('results.show');
 });

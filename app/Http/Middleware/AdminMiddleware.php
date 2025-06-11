@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\AuditLog;
 
 class AdminMiddleware
 {
@@ -17,9 +18,29 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->is_admin) {
+        if (!auth()->check()) {
+            AuditLog::log('admin_access', 'failed', [
+                'reason' => 'not_authenticated',
+                'path' => $request->path()
+            ]);
+            
+            return redirect()->route('login')->with('warning', 'Silakan login terlebih dahulu untuk mengakses halaman admin.');
+        }
+
+        if (!auth()->user()->is_admin) {
+            AuditLog::log('admin_access', 'failed', [
+                'reason' => 'not_admin',
+                'user_id' => auth()->id(),
+                'path' => $request->path()
+            ]);
+            
             return redirect()->route('home')->with('error', 'Akses ditolak. Anda bukan admin.');
         }
+
+        AuditLog::log('admin_access', 'success', [
+            'user_id' => auth()->id(),
+            'path' => $request->path()
+        ]);
 
         return $next($request);
     }

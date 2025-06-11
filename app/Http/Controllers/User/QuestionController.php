@@ -22,15 +22,6 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        // Debug logging
-        Log::info('Store method called', [
-            'method' => $request->method(),
-            'url' => $request->url(),
-            'content_type' => $request->header('Content-Type'),
-            'expects_json' => $request->expectsJson(),
-            'data' => $request->all()
-        ]);
-
         try {
             // Validate the incoming request data
             $validatedData = $request->validate([
@@ -45,8 +36,6 @@ class QuestionController extends Controller
                 'screen' => 'required|string|in:13-14-inch,15-16-inch,17-inch,high-res',
             ]);
 
-            Log::info('Validation passed', ['validated_data' => $validatedData]);
-
             // Save data to database
             $userResponse = UserResponse::create([
                 'name' => $validatedData['name'],
@@ -60,23 +49,20 @@ class QuestionController extends Controller
                 'user_id' => auth()->id(),
             ]);
 
-            // Log successful submission
-            Log::info('User response saved successfully', [
+            // Log minimal information
+            Log::info('User response saved', [
                 'user_response_id' => $userResponse->id,
-                'name' => $validatedData['name']
+                'user_id' => auth()->id()
             ]);
 
-            // Check if request expects JSON (AJAX) or regular form submission
+            // Return minimal data in response
             if ($request->expectsJson() || $request->ajax()) {
-                // Return JSON response for AJAX requests
                 return response()->json([
                     'success' => true,
                     'message' => 'Data berhasil disimpan!',
-                    'data' => $userResponse,
                     'redirect_url' => route('results.show', $userResponse->id)
                 ]);
             } else {
-                // Regular form submission - redirect directly
                 return redirect()->route('results.show', $userResponse->id)
                                ->with('success', 'Rekomendasi laptop berhasil dibuat!');
             }
@@ -90,24 +76,22 @@ class QuestionController extends Controller
                     'message' => 'Data tidak valid',
                     'errors' => $e->errors()
                 ], 422);
-            } else {
-                return redirect()->back()
-                               ->withErrors($e->errors())
-                               ->withInput();
             }
+            
+            return redirect()->back()
+                           ->withErrors($e->errors())
+                           ->withInput();
 
         } catch (\Exception $e) {
-            // Log the error
             Log::error('Error saving user response', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
+                'user_id' => auth()->id()
             ]);
 
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+                    'message' => 'Terjadi kesalahan saat menyimpan data'
                 ], 500);
             } else {
                 return redirect()->back()
@@ -118,7 +102,7 @@ class QuestionController extends Controller
     }
 
     /**
-     * Get form options for dynamic loading (optional)
+     * Get form options for dynamic loading
      */
     public function getFormOptions()
     {
